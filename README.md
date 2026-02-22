@@ -2,6 +2,8 @@
 
 A Python CLI tool that generates comprehensive data profile reports for CSV files. Quickly analyze your data's structure, quality, and statistics without touching memory-intensive tools.
 
+These are the two recommended ways to run the CSV Data Profiler: (A) directly from the repo (no installation) or (B) install the package (run from anywhere).
+
 ## ✨ Features
 
 - **Automatic Type Detection**: Infers column data types (int, float, string, boolean, mixed)
@@ -43,7 +45,10 @@ cd File-Profiler-Tool
 ```bash
 python -m venv .venv
 source .venv/bin/activate    # macOS / Linux
-.venv\Scripts\activate      # Windows PowerShell
+# Windows (cmd.exe)
+.venv\Scripts\activate
+# Windows PowerShell (may require changing execution policy):
+.\.venv\Scripts\Activate.ps1
 ```
 
 3. Run the profiler using Python's module mode (works from repo root):
@@ -72,12 +77,15 @@ Notes for this flow:
 
 B) Install the package (run from anywhere)
 
-1. (Optional but recommended) create & activate a virtual environment:
+2. (Optional but recommended) create & activate a virtual environment:
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate    # macOS / Linux
-.venv\Scripts\activate      # Windows PowerShell
+# Windows (cmd.exe)
+.venv\Scripts\activate
+# Windows PowerShell (may require changing execution policy):
+.\.venv\Scripts\Activate.ps1
 ```
 
 2. Install runtime dependencies and the package (editable for development):
