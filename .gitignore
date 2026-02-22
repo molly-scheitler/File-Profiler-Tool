@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
@@ -7,6 +8,13 @@ __pycache__/
 *.so
 
 # Distribution / packaging
+=======
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+>>>>>>> a55bf5e (Initial commit: CSV data profiler tool with CLI, reports, and tests)
 .Python
 build/
 develop-eggs/
@@ -20,12 +28,16 @@ parts/
 sdist/
 var/
 wheels/
+<<<<<<< HEAD
 share/python-wheels/
+=======
+>>>>>>> a55bf5e (Initial commit: CSV data profiler tool with CLI, reports, and tests)
 *.egg-info/
 .installed.cfg
 *.egg
 MANIFEST
 
+<<<<<<< HEAD
 # PyInstaller
 #  Usually these files are written by a python script from a template
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
@@ -205,3 +217,28 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+=======
+# Virtual Environments
+venv/
+ENV/
+env/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Test outputs
+.coverage
+.pytest_cache/
+htmlcov/
+
+# Temporary files
+*.tmp
+*.bak
+/tmp/
+>>>>>>> a55bf5e (Initial commit: CSV data profiler tool with CLI, reports, and tests)
