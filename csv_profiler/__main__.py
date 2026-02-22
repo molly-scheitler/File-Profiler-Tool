@@ -4,5 +4,10 @@
 from .cli import profile
 
 
-if __name__ == '__main__':
+def main():
+    """Main entry point for the CLI."""
     profile()
+
+
+if __name__ == '__main__':
+    main()

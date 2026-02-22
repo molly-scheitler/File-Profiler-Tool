@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-# File-Profiler-Tool
-A modular CSV profiling tool that analyzes any CSV and reports nulls, duplicates, distinct values, inferred types, and summary statistics. Features a clean CLI, multiple output formats (table, HTML, JSON), edge‑case handling, and full test coverage for reliable data quality checks.
-=======
 # 📊 CSV Data Profiler
 
 A Python CLI tool that generates comprehensive data profile reports for CSV files. Quickly analyze your data's structure, quality, and statistics without touching memory-intensive tools.
@@ -29,55 +25,52 @@ A Python CLI tool that generates comprehensive data profile reports for CSV file
 - Python 3.7+
 - Click (for CLI interface)
 
-## 🚀 Installation
+## 🚀 Quick Start
 
-### 1. Clone or Download the Project
+**Option 1: Run without installing (simplest)**
+
+Works right after cloning. Just run commands from the **repository root** (where `csv_profiler/` and `README.md` live).
+
+**Option 2: Install locally (optional, run from anywhere)**
+
+For repeated use or sharing with teammates.
+
+---
+
+## 🎯 Path 1: Run Without Installing (Recommended for Quick Use)
+
+### Clone the Repository
 
 ```bash
-cd /path/to/Data-Profiler/csv_profiler
+git clone https://github.com/YOUR_USERNAME/File-Profiler-Tool.git
+cd File-Profiler-Tool
 ```
 
-### 2. Install Dependencies
+### Run Commands from the Repository Root
 
+Make sure you're in the **root directory** (where this README is). Then:
+
+**macOS / Linux:**
 ```bash
-pip install click
+python -m csv_profiler /absolute/path/to/your.csv
 ```
 
-Alternatively, create a virtual environment (recommended):
-
+**Windows (PowerShell):**
 ```bash
-# Create virtual environment
-python3 -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install dependencies
-pip install click
+python -m csv_profiler "C:\full\path\to\your.csv"
 ```
 
-## 💻 Usage
-
-### Basic Usage
-
-Profile a CSV file and display results in the console:
+### Quick Demo (Using Sample Data)
 
 ```bash
-python -m csv_profiler data.csv
-```
+# View table in console
+python -m csv_profiler csv_profiler/tests/sample_data.csv
 
-### Save as HTML Report
+# Save as HTML report
+python -m csv_profiler csv_profiler/tests/sample_data.csv -f html -o report.html
 
-Generate a beautiful HTML report you can open in any browser:
-
-```bash
-python -m csv_profiler data.csv --format html --output report.html
-```
-
-### Export as JSON
-
-Get machine-readable JSON output for integration with other tools:
-
-```bash
-python -m csv_profiler data.csv --format json --output report.json
+# Export as JSON
+python -m csv_profiler csv_profiler/tests/sample_data.csv -f json -o report.json
 ```
 
 ### All Available Options
@@ -86,37 +79,73 @@ python -m csv_profiler data.csv --format json --output report.json
 python -m csv_profiler --help
 ```
 
-Output:
-```
-Usage: __main__.py [OPTIONS] FILEPATH
+### Notes
 
-  Generate a data profile report for a CSV file.
+- **Use an absolute path** to your CSV (`/full/path/to/file.csv`) so the command works from anywhere.
+- If your CSV path has **spaces**, quote it: `"/path with spaces/file.csv"`
+- On **Windows**, use backslashes or forward slashes in quoted paths.
 
-  FILEPATH: Path to the CSV file to profile
+---
 
-Options:
-  -o, --output TEXT        Output file path (if not specified, prints to
-                           console for table format)
-  -f, --format [table|html|json]
-                           Output format (default: table)
-  --chunk-size INTEGER     Chunk size for reading large files (default: 10000)
-  --help                   Show this message and exit.
-```
+## 📦 Path 2: Optional Install (Run from Any Directory)
 
-### Examples
+Install dependencies and the package in editable mode. Then run from any terminal location.
+
+### Install
 
 ```bash
-# View table in console (default)
+# Install dependencies
+python -m pip install -r requirements.txt
+
+# Install the package in editable mode
+python -m pip install -e .
+```
+
+### Run from Anywhere
+
+```bash
+# Works from any directory
+python -m csv_profiler /absolute/path/to/your.csv
+python -m csv_profiler /absolute/path/to/your.csv -f html -o report.html
+```
+
+### (Optional) Add a Console Script
+
+If you want to use the short `csv-profiler` command (without `python -m`), we've included `pyproject.toml` with an entry point. After installing with `-e`, just use:
+
+```bash
+csv-profiler /absolute/path/to/your.csv
+csv-profiler /absolute/path/to/your.csv -f html -o report.html
+```
+
+---
+
+## 💻 Usage
+
+### View Results in Console (Table Format)
+
+```bash
 python -m csv_profiler customers.csv
+```
 
-# Save HTML report
+### Save as HTML Report (Recommended for Sharing)
+
+```bash
 python -m csv_profiler customers.csv -f html -o report.html
+open report.html  # macOS
+# or: start report.html (Windows) / xdg-open report.html (Linux)
+```
 
-# Save JSON with custom chunk size for very large files
-python -m csv_profiler massive_dataset.csv --format json --output analysis.json --chunk-size 50000
+### Export as JSON (For Data Pipelines)
 
-# Short flags
-python -m csv_profiler sales.csv -f table -o sales_profile.txt
+```bash
+python -m csv_profiler customers.csv -f json -o report.json
+```
+
+### Handle Large Files (Custom Chunk Size)
+
+```bash
+python -m csv_profiler massive_dataset.csv --chunk-size 50000
 ```
 
 ## 📊 Output Formats
@@ -275,25 +304,56 @@ csv_profiler/
 
 ## 🐛 Troubleshooting
 
-### Issue: "Command not found: python -m csv_profiler"
+### "ModuleNotFoundError: No module named 'csv_profiler'"
 
-**Solution**: Make sure you're in the project directory:
+**Cause**: You're not in the repository root directory.
+
+**Solution**: Navigate to the folder where `csv_profiler/` lives:
 ```bash
-cd /path/to/Data-Profiler/csv_profiler
+cd /path/to/File-Profiler-Tool
+python -m csv_profiler your_file.csv
 ```
 
-### Issue: "ModuleNotFoundError: No module named 'click'"
+If you're inside the `csv_profiler/` folder, go up one level:
+```bash
+cd ..
+python -m csv_profiler your_file.csv
+```
 
-**Solution**: Install Click:
+### "Error: Invalid value for 'FILEPATH': Path 'file.csv' does not exist"
+
+**Cause**: The file path is wrong or relative to the wrong directory.
+
+**Solution**: Use an absolute path:
+```bash
+python -m csv_profiler /Users/yourname/Downloads/file.csv
+python -m csv_profiler "C:\Users\yourname\Downloads\file.csv"  # Windows
+```
+
+Or navigate to the file's directory first:
+```bash
+cd /path/with/your/file
+python -m csv_profiler file.csv
+```
+
+### "ModuleNotFoundError: No module named 'click'"
+
+**Cause**: Click is not installed.
+
+**Solution**: Install it:
 ```bash
 pip install click
+# or from requirements.txt
+pip install -r requirements.txt
 ```
 
-### Issue: File permission error
+### On macOS/Linux: "command not found: python"
 
-**Solution**: Ensure the CSV file is readable:
+**Cause**: Python might be installed as `python3`.
+
+**Solution**: Use `python3` explicitly:
 ```bash
-chmod 644 your_file.csv
+python3 -m csv_profiler file.csv
 ```
 
 ## 💡 Example Workflow
@@ -409,4 +469,3 @@ If you encounter issues or have questions:
 ---
 
 **Happy profiling! 📊**
->>>>>>> a55bf5e (Initial commit: CSV data profiler tool with CLI, reports, and tests)
