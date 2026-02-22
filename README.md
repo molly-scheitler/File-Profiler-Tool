@@ -25,100 +25,114 @@ A Python CLI tool that generates comprehensive data profile reports for CSV file
 - Python 3.7+
 - Click (for CLI interface)
 
-## 🚀 Quick Start
+## 🚀 Quick Start (explicit step-by-step)
 
-**Option 1: Run without installing (simplest)**
+Below are two explicit, numbered workflows you can copy into docs or share with teammates. Pick A (run from the repo) if you want zero install friction; pick B (install) if you want a persistent, shareable command.
 
-Works right after cloning. Just run commands from the **repository root** (where `csv_profiler/` and `README.md` live).
+A) Run directly from the repository (no install)
 
-**Option 2: Install locally (optional, run from anywhere)**
-
-For repeated use or sharing with teammates.
-
----
-
-## 🎯 Path 1: Run Without Installing (Recommended for Quick Use)
-
-### Clone the Repository
+1. Clone the repo and change into it:
 
 ```bash
 git clone https://github.com/molly-scheitler/File-Profiler-Tool.git
 cd File-Profiler-Tool
 ```
 
-### Run Commands from the Repository Root
+2. (Optional) Create and activate a virtual environment:
 
-Make sure you're in the **root directory** (where this README is). Then:
-
-**macOS / Linux:**
 ```bash
+python -m venv .venv
+source .venv/bin/activate    # macOS / Linux
+.venv\Scripts\activate      # Windows PowerShell
+```
+
+3. Run the profiler using Python's module mode (works from repo root):
+
+```bash
+# basic table output to terminal
 python -m csv_profiler /absolute/path/to/your.csv
+
+# write HTML report
+python -m csv_profiler /absolute/path/to/your.csv --format html --output report.html
+
+# write JSON summary
+python -m csv_profiler /absolute/path/to/your.csv --format json --output summary.json
 ```
 
-**Windows (PowerShell):**
-```bash
-python -m csv_profiler "C:\full\path\to\your.csv"
-```
-
-### Quick Demo (Using Sample Data)
-
-```bash
-# View table in console
-python -m csv_profiler csv_profiler/tests/sample_data.csv
-
-# Save as HTML report
-python -m csv_profiler csv_profiler/tests/sample_data.csv -f html -o report.html
-
-# Export as JSON
-python -m csv_profiler csv_profiler/tests/sample_data.csv -f json -o report.json
-```
-
-### All Available Options
+4. Inspect help and options:
 
 ```bash
 python -m csv_profiler --help
 ```
 
-### Notes
+Notes for this flow:
+- Always run from the repository root (the folder that contains `csv_profiler/` and `README.md`).
+- If your CSV path has spaces, quote the path.
+- You can run on JSON or Parquet files too (Parquet requires optional `pandas` + `pyarrow`).
 
-- **Use an absolute path** to your CSV (`/full/path/to/file.csv`) so the command works from anywhere.
-- If your CSV path has **spaces**, quote it: `"/path with spaces/file.csv"`
-- On **Windows**, use backslashes or forward slashes in quoted paths.
+B) Install the package (run from anywhere)
 
----
-
-## 📦 Path 2: Optional Install (Run from Any Directory)
-
-Install dependencies and the package in editable mode. Then run from any terminal location.
-
-### Install
+1. (Optional but recommended) create & activate a virtual environment:
 
 ```bash
-# Install dependencies
-python -m pip install -r requirements.txt
+python -m venv .venv
+source .venv/bin/activate    # macOS / Linux
+.venv\Scripts\activate      # Windows PowerShell
+```
 
-# Install the package in editable mode
+2. Install runtime dependencies and the package (editable for development):
+
+```bash
+python -m pip install -r requirements.txt
 python -m pip install -e .
 ```
 
-### Run from Anywhere
+3. Run using the installed console script (or `python -m`):
 
 ```bash
-# Works from any directory
-python -m csv_profiler /absolute/path/to/your.csv
-python -m csv_profiler /absolute/path/to/your.csv -f html -o report.html
+# short console script (after install)
+csv-profiler /absolute/path/to/your.csv --format table
+
+# or equivalent module mode
+python -m csv_profiler /absolute/path/to/your.csv --format html --output report.html
 ```
 
-### (Optional) Add a Console Script
-
-If you want to use the short `csv-profiler` command (without `python -m`), we've included `pyproject.toml` with an entry point. After installing with `-e`, just use:
+4. Validate against a schema (example):
 
 ```bash
-csv-profiler /absolute/path/to/your.csv
-csv-profiler /absolute/path/to/your.csv -f html -o report.html
+csv-profiler /path/to/data.csv --schema schema.json --validate --format json --output schema_validation.json
 ```
 
----
+Notes for this flow:
+- If `csv-profiler` isn't found after install, make sure the virtualenv is active or your PATH includes the environment's `bin` directory.
+- Editable installs (`-e`) are useful during development — changes in `csv_profiler/` are picked up without re-installing.
+
+Common options and examples
+
+```bash
+# Format: table (default), json, html
+--format table|json|html
+
+# Output file (optional)
+--output /path/to/result.html
+
+# Schema validation (JSON file mapping column->type)
+--schema schema.json --validate
+
+# Chunk size for streaming large files
+--chunk-size 50000
+```
+
+Quick copy-ready snippet for docs
+
+```bash
+# Run without installing (from repo root)
+python -m csv_profiler /full/path/to/data.csv --format html --output report.html
+
+# Or install and run from anywhere
+python -m pip install -e .
+csv-profiler /full/path/to/data.csv --format html --output report.html
+```
 
 ## 💻 Usage
 

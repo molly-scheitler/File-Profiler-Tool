@@ -74,7 +74,27 @@ class ReportFormatter:
                     lines.append(f"    {idx}. {value!r:<40} (count: {count}, {percentage:.2f}%)")
             
             lines.append("")
-        
+        # PII flags
+        if self.summary.get('pii_flags'):
+            lines.append("PII Flags:")
+            for colname, flags in self.summary['pii_flags'].items():
+                lines.append(f" - {colname}: {', '.join(flags)}")
+
+        # Correlation matrix (small)
+        if self.summary.get('correlation_matrix'):
+            lines.append("\nCorrelation matrix (numeric columns):")
+            # build a small table
+            keys = sorted({k.split('__')[0] for k in self.summary['correlation_matrix'].keys()})
+            if keys:
+                header = [''] + keys
+                lines.append(' | '.join(header))
+                for r in keys:
+                    row = [r]
+                    for c in keys:
+                        val = self.summary['correlation_matrix'].get(f"{r}__{c}")
+                        row.append(str(val) if val is not None else 'NA')
+                    lines.append(' | '.join(row))
+
         lines.append("=" * 100)
         
         return "\n".join(lines)
@@ -436,7 +456,43 @@ class ReportFormatter:
             html_parts.append("""
                 </div>
             </div>""")
-        
+            # Add PII flags section
+            if self.summary.get('pii_flags'):
+                html_parts.append("""
+                <div class=\"column-card\">
+                    <div class=\"column-header\">PII Flags</div>
+                    <div class=\"column-content\">
+                        <ul>
+                """)
+                for colname, flags in self.summary['pii_flags'].items():
+                    html_parts.append(f"<li><strong>{colname}</strong>: {', '.join(flags)}</li>")
+                html_parts.append("""
+                        </ul>
+                    </div>
+                </div>
+                """)
+
+            # Add correlation matrix (if available)
+            if self.summary.get('correlation_matrix'):
+                html_parts.append("""
+                <div class=\"column-card\">
+                    <div class=\"column-header\">Correlation Matrix (numeric columns)</div>
+                    <div class=\"column-content\">
+                        <table style=\"width:100%;border-collapse:collapse\">""")
+                keys = sorted({k.split('__')[0] for k in self.summary['correlation_matrix'].keys()})
+                html_parts.append("<tr><th></th>" + ''.join(f"<th>{k}</th>" for k in keys) + "</tr>")
+                for r in keys:
+                    row_html = f"<tr><td><strong>{r}</strong></td>"
+                    for c in keys:
+                        val = self.summary['correlation_matrix'].get(f"{r}__{c}")
+                        row_html += f"<td>{val if val is not None else 'NA'}</td>"
+                    row_html += "</tr>"
+                    html_parts.append(row_html)
+                html_parts.append("""
+                        </table>
+                    </div>
+                </div>
+                """)
         html_parts.append("""
         </div>""")
         

@@ -7,7 +7,7 @@ name = "csv-profiler"
 version = "0.1.0"
 description = "A Python CLI tool for comprehensive CSV data profiling and analysis"
 readme = "README.md"
-license = {text = "MIT"}
+license = "MIT"
 authors = [
     {name = "Molly Scheitler", email = "mollyscheitler@example.com"}
 ]
@@ -22,3 +22,8 @@ Repository = "https://github.com/molly-scheitler/File-Profiler-Tool.git"
 
 [project.scripts]
 csv-profiler = "csv_profiler.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["csv_profiler*"]
+exclude = ["sample_data*"]

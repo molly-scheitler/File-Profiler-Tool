@@ -6,6 +6,9 @@ from typing import Dict, List, Any, Tuple, Optional
 import statistics
 from collections import Counter, defaultdict
 from dataclasses import dataclass
+import json
+import re
+import math
 
 
 @dataclass
@@ -60,6 +63,8 @@ class DataProfiler:
         self.profiles: Dict[str, ColumnProfile] = {}
         self.total_rows = 0
         self.headers: List[str] = []
+        self.pii_flags: Dict[str, List[str]] = defaultdict(list)
+        self.correlation_matrix: Dict[Tuple[str, str], Optional[float]] = {}
     
     def _infer_type(self, value: str) -> str:
         """Infer the type of a value."""
@@ -87,6 +92,30 @@ class DataProfiler:
             return "bool"
         
         return "string"
+
+    def _looks_like_ssn(self, s: str) -> bool:
+        # U.S. SSN patterns: 123-45-6789 or 9 digits
+        if not s:
+            return False
+        s = s.strip()
+        return bool(re.fullmatch(r"\d{3}-\d{2}-\d{4}", s) or re.fullmatch(r"\d{9}", s))
+
+    def _looks_like_npi(self, s: str) -> bool:
+        # NPI is 10-digit numeric identifier
+        if not s:
+            return False
+        return bool(re.fullmatch(r"\d{10}", s.strip()))
+
+    def _looks_like_email(self, s: str) -> bool:
+        if not s:
+            return False
+        return bool(re.search(r"[^@\s]+@[^@\s]+\.[^@\s]+", s))
+
+    def _looks_like_phone(self, s: str) -> bool:
+        if not s:
+            return False
+        # simple phone detection
+        return bool(re.search(r"\d{3}[-\.\s]?\d{3}[-\.\s]?\d{4}", s))
     
     def _is_numeric(self, inferred_type: str) -> bool:
         """Check if a type is numeric."""
@@ -116,41 +145,129 @@ class DataProfiler:
         col_values: Dict[str, List[str]] = defaultdict(list)
         null_counts: Dict[str, int] = defaultdict(int)
         value_counts: Dict[str, Counter] = defaultdict(Counter)
+        numeric_samples: Dict[str, List[float]] = defaultdict(list)
         
         try:
-            with open(self.filepath, 'r', encoding='utf-8') as f:
-                reader = csv.DictReader(f)
-                
-                if reader.fieldnames is None:
-                    self.headers = []
+            ext = os.path.splitext(self.filepath)[1].lower()
+            # Support CSV, JSON, newline-delimited JSON, and Parquet (optional)
+            if ext == '.csv':
+                with open(self.filepath, 'r', encoding='utf-8') as f:
+                    reader = csv.DictReader(f)
+
+                    if reader.fieldnames is None:
+                        self.headers = []
+                        return {}
+
+                    self.headers = list(reader.fieldnames)
+
+                    for header in self.headers:
+                        col_types[header] = []
+                        col_values[header] = []
+
+                    row_count = 0
+                    for row in reader:
+                        row_count += 1
+
+                        for header in self.headers:
+                            value = row.get(header, "")
+
+                            if value is None or value == "":
+                                null_counts[header] += 1
+                                col_types[header].append("null")
+                            else:
+                                inferred_type = self._infer_type(value)
+                                col_types[header].append(inferred_type)
+                                col_values[header].append(value)
+                                value_counts[header][value] += 1
+                                if self._is_numeric(inferred_type):
+                                    parsed = self._parse_value(value, "float")
+                                    if parsed is not None:
+                                        numeric_samples[header].append(parsed)
+
+                    self.total_rows = row_count
+
+            elif ext == '.json':
+                # support either a JSON array of objects or newline-delimited JSON
+                with open(self.filepath, 'r', encoding='utf-8') as f:
+                    first = f.readline().strip()
+                    f.seek(0)
+                    data = None
+                    if first.startswith('['):
+                        data = json.load(f)
+                    else:
+                        # ndjson
+                        data = [json.loads(line) for line in f if line.strip()]
+
+                    if not data:
+                        self.headers = []
+                        return {}
+
+                    self.headers = list(data[0].keys())
+                    for header in self.headers:
+                        col_types[header] = []
+                        col_values[header] = []
+
+                    row_count = 0
+                    for row in data:
+                        row_count += 1
+                        for header in self.headers:
+                            value = row.get(header, "")
+                            if value is None or value == "":
+                                null_counts[header] += 1
+                                col_types[header].append("null")
+                            else:
+                                inferred_type = self._infer_type(str(value))
+                                col_types[header].append(inferred_type)
+                                col_values[header].append(str(value))
+                                value_counts[header][str(value)] += 1
+                                if self._is_numeric(inferred_type):
+                                    parsed = self._parse_value(str(value), "float")
+                                    if parsed is not None:
+                                        numeric_samples[header].append(parsed)
+
+                    self.total_rows = row_count
+
+            elif ext in ('.parquet', '.pq'):
+                # optional dependency
+                try:
+                    import pandas as _pd
+                except Exception:
+                    raise RuntimeError("Reading Parquet requires 'pandas' and optional 'pyarrow'. Please install them to proceed.")
+
+                df = _pd.read_parquet(self.filepath)
+                if df.empty:
+                    self.headers = list(df.columns)
                     return {}
-                
-                self.headers = list(reader.fieldnames)
-                
+
+                self.headers = list(df.columns)
                 for header in self.headers:
                     col_types[header] = []
                     col_values[header] = []
-                
+
                 row_count = 0
-                for row in reader:
+                for _, row in df.iterrows():
                     row_count += 1
-                    
                     for header in self.headers:
                         value = row.get(header, "")
-                        
-                        if value is None or value == "":
+                        if value is None or (isinstance(value, float) and math.isnan(value)) or value == "":
                             null_counts[header] += 1
                             col_types[header].append("null")
                         else:
-                            inferred_type = self._infer_type(value)
+                            inferred_type = self._infer_type(str(value))
                             col_types[header].append(inferred_type)
-                            col_values[header].append(value)
-                            value_counts[header][value] += 1
-                
+                            col_values[header].append(str(value))
+                            value_counts[header][str(value)] += 1
+                            if self._is_numeric(inferred_type):
+                                parsed = self._parse_value(str(value), "float")
+                                if parsed is not None:
+                                    numeric_samples[header].append(parsed)
+
                 self.total_rows = row_count
-        
+            else:
+                raise ValueError("Unsupported file type. Supported: .csv, .json, .parquet")
+
         except Exception as e:
-            raise RuntimeError(f"Error reading CSV file: {str(e)}")
+            raise RuntimeError(f"Error reading file: {str(e)}")
         
         if self.total_rows == 0:
             return self._create_empty_profiles()
@@ -227,6 +344,49 @@ class DataProfiler:
             )
             
             self.profiles[header] = profile
+
+            # PII detection heuristics (based on header name and sample values)
+            flags = []
+            lname = header.lower()
+            if 'name' in lname or 'full_name' in lname or 'first' in lname or 'last' in lname:
+                flags.append('possible_name')
+            if 'ssn' in lname or any(self._looks_like_ssn(v) for v in col_values[header][:20]):
+                flags.append('ssn')
+            if 'npi' in lname or any(self._looks_like_npi(v) for v in col_values[header][:20]):
+                flags.append('npi')
+            if 'email' in lname or any(self._looks_like_email(v) for v in col_values[header][:20]):
+                flags.append('email')
+            if 'phone' in lname or any(self._looks_like_phone(v) for v in col_values[header][:20]):
+                flags.append('phone')
+
+            if flags:
+                self.pii_flags[header] = flags
+
+        # Compute correlation matrix for numeric columns
+        numeric_cols = [h for h in self.headers if h in numeric_samples and len(numeric_samples[h]) > 1]
+        for i, a in enumerate(numeric_cols):
+            for j, b in enumerate(numeric_cols):
+                if j <= i:
+                    # symmetric
+                    continue
+                xa = numeric_samples[a]
+                xb = numeric_samples[b]
+                # align lengths by taking min length samples if they differ
+                n = min(len(xa), len(xb))
+                if n < 2:
+                    corr = None
+                else:
+                    xa_s = xa[:n]
+                    xb_s = xb[:n]
+                    mean_x = statistics.mean(xa_s)
+                    mean_y = statistics.mean(xb_s)
+                    cov = sum((u - mean_x) * (v - mean_y) for u, v in zip(xa_s, xb_s)) / (n - 1)
+                    stdev_x = statistics.stdev(xa_s)
+                    stdev_y = statistics.stdev(xb_s)
+                    corr = cov / (stdev_x * stdev_y) if stdev_x > 0 and stdev_y > 0 else None
+
+                self.correlation_matrix[(a, b)] = corr
+                self.correlation_matrix[(b, a)] = corr
         
         return self.profiles
     
@@ -258,4 +418,6 @@ class DataProfiler:
             "total_rows": self.total_rows,
             "total_columns": len(self.headers),
             "columns": [p.to_dict() for p in self.profiles.values()],
+            "pii_flags": self.pii_flags,
+            "correlation_matrix": {f"{a}__{b}": (None if v is None else round(v, 4)) for (a, b), v in self.correlation_matrix.items()},
         }

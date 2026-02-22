@@ -11,6 +11,7 @@ try:
 except Exception:
     from profiler import DataProfiler
     from reports import ReportFormatter
+import json
 
 
 @click.command()
@@ -32,6 +33,18 @@ except Exception:
     type=int,
     default=10000,
     help='Chunk size for reading large files (default: 10000)'
+)
+@click.option(
+    '--schema', '-s',
+    type=click.Path(exists=True),
+    default=None,
+    help='Path to expected schema JSON file for validation (optional)'
+)
+@click.option(
+    '--validate',
+    is_flag=True,
+    default=False,
+    help='Run schema validation mode (requires --schema)'
 )
 def profile(filepath: str, output: str, format: str, chunk_size: int):
     """
@@ -59,6 +72,24 @@ def profile(filepath: str, output: str, format: str, chunk_size: int):
         # Generate profile
         profiles = profiler.profile()
         summary = profiler.get_summary()
+
+        # If schema validation requested, attempt to validate
+        if validate and schema:
+            try:
+                with open(schema, 'r', encoding='utf-8') as sf:
+                    expected = json.load(sf)
+                # expected is a mapping of column -> expected_type
+                mismatches = []
+                for col, expected_type in expected.items():
+                    prof = profiles.get(col)
+                    if prof is None:
+                        mismatches.append(f"Missing column: {col}")
+                    else:
+                        if prof.data_type != expected_type:
+                            mismatches.append(f"Column {col}: expected {expected_type}, got {prof.data_type}")
+                summary['schema_validation'] = {'mismatches': mismatches, 'ok': len(mismatches) == 0}
+            except Exception as e:
+                summary['schema_validation'] = {'error': str(e)}
         
         # Format and output report
         formatter = ReportFormatter(summary)
