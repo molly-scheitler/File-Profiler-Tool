@@ -1,8 +1,8 @@
-# 📊 CSV Data Profiler
+# 📊 CSV Profiler
 
 A Python CLI tool that generates comprehensive data profile reports for CSV files. Quickly analyze your data's structure, quality, and statistics without touching memory-intensive tools.
 
-These are the two recommended ways to run the CSV Data Profiler: (A) directly from the repo (no installation) or (B) install the package (run from anywhere).
+These are the two recommended ways to run the CSV Profiler: (A) directly from the repo (no installation) or (B) install the package (run from anywhere).
 
 ## ✨ Features
 
