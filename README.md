@@ -444,6 +444,12 @@ Column: age | Type: int
 - Test file paths required adjustment (Copilot generated hardcoded paths that needed to be relative)
 - Copilot didn't proactively suggest the Git setup, requirements.txt file, or assignment deliverable structure—these were added after the fact based on assignment requirements
 
+**What Surprised Me:**
+- I was surprised at how confidently Copilot generated large sections of the project—such as the initial CLI structure, HTML layout, and the detailed README text. It often produced results that were close to production‑ready on the first pass.
+- It also surprised me how well Copilot could infer patterns from the existing code; for example, when I added a new feature, Copilot began suggesting consistent updates across related files without being explicitly told.
+- I did not expect Copilot to create such thorough unit tests so quickly. Even though some needed adjustments (like fixing hardcoded paths), the coverage it generated on the first attempt was far broader than I anticipated.
+- I also didn’t expect Copilot to generate such polished explanations and documentation for user‑facing sections (usage examples, help text, troubleshooting). This made writing the README significantly faster than normal.
+
 **Overall**: Copilot was exceptional for code generation, boilerplate, and documentation. Manual testing and environment setup were necessary for production readiness. The tool went from concept to fully functional with 20 passing tests in a single session.
 
 ## �🤝 Contributing
