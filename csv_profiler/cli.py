@@ -46,7 +46,7 @@ import json
     default=False,
     help='Run schema validation mode (requires --schema)'
 )
-def profile(filepath: str, output: str, format: str, chunk_size: int):
+def profile(filepath: str, output: str, format: str, chunk_size: int, schema: str, validate: bool):
     """
     Generate a data profile report for a CSV file.
     
