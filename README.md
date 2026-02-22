@@ -34,7 +34,7 @@ There are two ways to run the CSV Profiler:
 - **A) Run directly from the repository (no install)** — zero install friction
 - **B) Install the package (run from anywhere)** — persistent, shareable command
 
-### 🅰️ A) Run directly from the repository (no install)
+### 🅰️ Run directly from the repository (no install)
 
 **1) Clone the repo and change into it**
 
@@ -87,7 +87,7 @@ python -m csv_profiler --help
 - If the path has spaces, quote it: `"/path with spaces/file.csv"`
 - Parquet support requires optional `pandas` + `pyarrow`.
 
-### 🅱️ B) Install the package (run from anywhere)
+### 🅱️ Install the package (run from anywhere)
 
 **1) (Recommended) Create & activate a virtual environment**
 
