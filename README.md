@@ -24,7 +24,7 @@ These are the two recommended ways to run the CSV Data Profiler: (A) directly fr
 
 ## 📋 Requirements
 
-- Python 3.7+
+- Python 3.8+
 - Click (for CLI interface)
 
 ## 🚀 Quick Start (explicit step-by-step)
@@ -32,7 +32,9 @@ These are the two recommended ways to run the CSV Data Profiler: (A) directly fr
 There are two ways to run the CSV Profiler:
 
 - **A) Run directly from the repository (no install)** — zero install friction
+        - Must run from repo root, use **python -m csv_profiler** only 
 - **B) Install the package (run from anywhere)** — persistent, shareable command
+        - Install first then **csv-profiler** command works from anywhere 
 
 ### 🅰️ Run directly from the repository (no install)
 
@@ -59,6 +61,9 @@ python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 ```
 
+**Why a virtual environment?**
+It ensures the csv-profiler command you run comes from this project, not from another Python (e.g., Anaconda "base"). If you see (.venv) (base) in your prompt, run **conda deactivate** until only (.venv) remains. 
+
 **PowerShell execution policy note:**
 If activation fails on PowerShell, run as current user (no admin) and execute:
 ```powershell
@@ -82,10 +87,10 @@ python -m csv_profiler --help
 ```
 
 **Notes (Path A):**
-- Always run from the repository root (folder containing `csv_profiler/` and `README.md`).
-- Use absolute paths to your CSV (recommended).
-- If the path has spaces, quote it: `"/path with spaces/file.csv"`
-- Parquet support requires optional `pandas` + `pyarrow`.
+- Always run commands from the repository root (folder containing `csv_profiler/` and `README.md`).
+- Prefer absolute paths (macOS example: /Users/mollyscheitler/Downloads/file.csv).
+- Quote paths with spaces: `"/path with spaces/file.csv"`
+- Parquet input requires: python -m pip install pandas pyarrow. 
 
 ### 🅱️ Install the package (run from anywhere)
 
@@ -560,7 +565,7 @@ Column: age | Type: int
 
 **Overall**: Copilot was exceptional for code generation, boilerplate, and documentation. Manual testing and environment setup were necessary for production readiness. The tool went from concept to fully functional with 20 passing tests in a single session.
 
-## �🤝 Contributing
+## 🤝 Contributing
 
 Feel free to extend this tool! Some ideas:
 - Add more output formats (PDF, Excel, Parquet)
