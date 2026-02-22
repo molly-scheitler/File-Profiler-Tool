@@ -42,7 +42,7 @@ For repeated use or sharing with teammates.
 ### Clone the Repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/File-Profiler-Tool.git
+git clone https://github.com/molly-scheitler/File-Profiler-Tool.git
 cd File-Profiler-Tool
 ```
 
