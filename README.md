@@ -29,93 +29,129 @@ These are the two recommended ways to run the CSV Data Profiler: (A) directly fr
 
 ## 🚀 Quick Start (explicit step-by-step)
 
-Below are two explicit, numbered workflows you can copy into docs or share with teammates. Pick A (run from the repo) if you want zero install friction; pick B (install) if you want a persistent, shareable command.
+There are two ways to run the CSV Profiler:
 
-A) Run directly from the repository (no install)
+- **A) Run directly from the repository (no install)** — zero install friction
+- **B) Install the package (run from anywhere)** — persistent, shareable command
 
-1. Clone the repo and change into it:
+### 🅰️ A) Run directly from the repository (no install)
+
+**1) Clone the repo and change into it**
 
 ```bash
 git clone https://github.com/molly-scheitler/File-Profiler-Tool.git
 cd File-Profiler-Tool
 ```
 
-2. (Optional) Create and activate a virtual environment:
+**2) (Optional) Create and activate a virtual environment**
 
 ```bash
+# macOS / Linux
 python -m venv .venv
-source .venv/bin/activate    # macOS / Linux
+source .venv/bin/activate
+
 # Windows (cmd.exe)
+python -m venv .venv
 .venv\Scripts\activate
-# Windows PowerShell (may require changing execution policy):
+
+# Windows (PowerShell) — if blocked, see note below
+python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 ```
 
-3. Run the profiler using Python's module mode (works from repo root):
-
-```bash
-# basic table output to terminal
-python -m csv_profiler /absolute/path/to/your.csv
-
-# write HTML report
-python -m csv_profiler /absolute/path/to/your.csv --format html --output report.html
-
-# write JSON summary
-python -m csv_profiler /absolute/path/to/your.csv --format json --output summary.json
+**PowerShell execution policy note:**
+If activation fails on PowerShell, run as current user (no admin) and execute:
+```powershell
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
 ```
 
-4. Inspect help and options:
+**3) Run the profiler using Python's module mode (from the repo root)**
 
 ```bash
+# Table output to terminal
+python -m csv_profiler /absolute/path/to/your.csv
+
+# Write HTML report
+python -m csv_profiler /absolute/path/to/your.csv --format html --output report.html
+
+# Write JSON summary
+python -m csv_profiler /absolute/path/to/your.csv --format json --output summary.json
+
+# Help
 python -m csv_profiler --help
 ```
 
-Notes for this flow:
-- Always run from the repository root (the folder that contains `csv_profiler/` and `README.md`).
-- If your CSV path has spaces, quote the path.
-- You can run on JSON or Parquet files too (Parquet requires optional `pandas` + `pyarrow`).
+**Notes (Path A):**
+- Always run from the repository root (folder containing `csv_profiler/` and `README.md`).
+- Use absolute paths to your CSV (recommended).
+- If the path has spaces, quote it: `"/path with spaces/file.csv"`
+- Parquet support requires optional `pandas` + `pyarrow`.
 
-B) Install the package (run from anywhere)
+### 🅱️ B) Install the package (run from anywhere)
 
-2. (Optional but recommended) create & activate a virtual environment:
+**1) (Recommended) Create & activate a virtual environment**
 
 ```bash
+# macOS / Linux
 python -m venv .venv
-source .venv/bin/activate    # macOS / Linux
+source .venv/bin/activate
+
 # Windows (cmd.exe)
+python -m venv .venv
 .venv\Scripts\activate
-# Windows PowerShell (may require changing execution policy):
+
+# Windows (PowerShell)
+python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 ```
 
-2. Install runtime dependencies and the package (editable for development):
+**If you also use Anaconda:**
+Make sure your prompt shows just `(.venv)` and not `(.venv) (base)`.
+If `(base)` appears, run `conda deactivate` until it's gone to avoid using the wrong `csv-profiler`.
+
+**2) Install runtime dependencies and the package (editable for dev)**
 
 ```bash
-python -m pip install -r requirements.txt
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt   # if present
 python -m pip install -e .
 ```
 
-3. Run using the installed console script (or `python -m`):
+**3) Verify you're using the right command**
 
 ```bash
-# short console script (after install)
+# macOS / Linux
+which csv-profiler
+
+# Windows
+where csv-profiler
+```
+
+It should point to your `.venv` (e.g., `.venv/bin/csv-profiler`).
+If it points to Anaconda, your venv is not active. Activate and try again.
+**Fallback that always works:** `python -m csv_profiler --help` (uses the active Python).
+
+**4) Run using the installed console script (or module form)**
+
+```bash
+# Short console script (after install)
 csv-profiler /absolute/path/to/your.csv --format table
 
-# or equivalent module mode
+# Equivalent module mode (uses the active Python)
 python -m csv_profiler /absolute/path/to/your.csv --format html --output report.html
 ```
 
-4. Validate against a schema (example):
+**Schema validation (example)**
 
 ```bash
 csv-profiler /path/to/data.csv --schema schema.json --validate --format json --output schema_validation.json
 ```
 
-Notes for this flow:
-- If `csv-profiler` isn't found after install, make sure the virtualenv is active or your PATH includes the environment's `bin` directory.
-- Editable installs (`-e`) are useful during development — changes in `csv_profiler/` are picked up without re-installing.
+**Notes (Path B):**
+- If `csv-profiler` isn't found, ensure the virtualenv is active (and your PATH includes the venv's `bin`/`Scripts`).
+- Editable installs (`-e`) pick up code changes without reinstalling.
 
-Common options and examples
+### 🔧 Common options & examples
 
 ```bash
 # Format: table (default), json, html
@@ -124,14 +160,14 @@ Common options and examples
 # Output file (optional)
 --output /path/to/result.html
 
-# Schema validation (JSON file mapping column->type)
+# Schema validation (JSON mapping column->type)
 --schema schema.json --validate
 
 # Chunk size for streaming large files
 --chunk-size 50000
 ```
 
-Quick copy-ready snippet for docs
+### 💡 Quick examples
 
 ```bash
 # Run without installing (from repo root)
@@ -141,6 +177,17 @@ python -m csv_profiler /full/path/to/data.csv --format html --output report.html
 python -m pip install -e .
 csv-profiler /full/path/to/data.csv --format html --output report.html
 ```
+
+### 🔴 Troubleshooting (2 most common issues)
+
+**I run `csv-profiler` but get the wrong Python (Anaconda base)**
+
+→ Activate your venv (`source .venv/bin/activate`), then `hash -r` (macOS/Linux) and try `which csv-profiler`.
+If still wrong, use `python -m csv_profiler …` which always uses the active environment.
+
+**Click error: `TypeError: ... unexpected keyword argument 'schema'`**
+
+→ You're on an older/partial version or function signature doesn't match CLI options. Pull the latest, reinstall with `python -m pip install -e .`, then try again.
 
 ## 💻 Usage
 
