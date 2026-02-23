@@ -64,7 +64,7 @@ python -m venv .venv
 **Why a virtual environment?**
 It ensures the csv-profiler command you run comes from this project, not from another Python (e.g., Anaconda "base"). If you see (.venv) (base) in your prompt, run **conda deactivate** until only (.venv) remains. 
 
-**PowerShell execution policy note:**
+**PowerShell execution policy note (Windows):**
 If activation fails on PowerShell, run as current user (no admin) and execute:
 ```powershell
 Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
