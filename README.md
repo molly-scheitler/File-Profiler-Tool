@@ -32,9 +32,9 @@ These are the two recommended ways to run the CSV Profiler: (A) directly from th
 There are two ways to run the CSV Profiler:
 
 - **A) Run directly from the repository (no install)** — zero install friction
-        - Must run from repo root, use **python -m csv_profiler** only 
+  - Must run from repo root, use **python -m csv_profiler** only 
 - **B) Install the package (run from anywhere)** — persistent, shareable command
-        - Install first then **csv-profiler** command works from anywhere 
+  - Install first then **csv-profiler** command works from anywhere 
 
 ### 🅰️ Run directly from the repository (no install)
 
