@@ -344,39 +344,39 @@ csv_profiler/
 
 This project includes a small set of files and folders. Below is a short, non-technical description of what each one is for and when you might look at it.
 
-- `csv_profiler/` — the program itself. If you want to change how profiling works, this is where to look.
-  - `__init__.py` — makes the folder a Python package; you don't normally need to edit this.
-  - `__main__.py` — lets you run the tool with `python -m csv_profiler`.
-  - `cli.py` — the command-line interface (how options like `--format` and `--output` are accepted).
-  - `profiler.py` — the main logic that reads your CSV and computes counts, statistics, PII hints, and correlations.
-  - `reports.py` — turns the profiling results into a readable table, HTML report, or JSON file.
+- **`csv_profiler/`** — the program itself. If you want to change how profiling works, this is where to look.
+  - **`__init__.py`** — makes the folder a Python package; you don't normally need to edit this.
+  - **`__main__.py`** — lets you run the tool with `python -m csv_profiler`.
+  - **`cli.py`** — the command-line interface (how options like `--format` and `--output` are accepted).
+  - **`profiler.py`** — the main logic that reads your CSV and computes counts, statistics, PII hints, and correlations.
+  - **`reports.py`** — turns the profiling results into a readable table, HTML report, or JSON file.
 
-- `tests/` — example files and automated tests used while developing. You can run these to check the tool works on your machine.
-  - `test_profiler.py` — automated checks used by developers.
-  - `sample_data.csv` / `sample_empty.csv` / `sample_all_nulls.csv` — small example files you can run the tool on right away.
+- **`tests/`** — example files and automated tests used while developing. You can run these to check the tool works on your machine.
+  - **`test_profiler.py`** — automated checks used by developers.
+  - **`sample_data.csv`** / **`sample_empty.csv`** / **`sample_all_nulls.csv`** — small example files you can run the tool on right away.
 
-- `pyproject.toml` — basic packaging info so you can install the tool if you want to. You don't need to understand this to run the tool.
-- `requirements.txt` — lists Python packages to install if you plan to install the tool. For normal use, only `click` is required; for Parquet support see below.
-- `.gitignore` — tells Git which files to ignore (not important for running the tool).
+- **`pyproject.toml`** — basic packaging info so you can install the tool if you want to. You don't need to understand this to run the tool.
+- **`requirements.txt`** — lists Python packages to install if you plan to install the tool. For normal use, only `click` is required; for Parquet support see below.
+- **`.gitignore`** — tells Git which files to ignore (not important for running the tool).
 
 If you are not a developer, you can safely ignore the Python files and `pyproject.toml` — you only need to follow the short instructions below to run the tool.
 
-Which approach should you pick? (Simple guide)
+**Which approach should you pick? (Simple guide)**
 
 - If you want the fastest, simplest way: Run directly from the repository (no install). This is ideal for trying the tool or showing it to someone in a class or meeting.
 - If you want to run the tool from anywhere on your computer, or share it with teammates, install the package into a virtual environment. This is slightly more setup but makes repeated use easier.
 
 Both approaches are described step-by-step in the sections above; choose the one that matches your situation.
 
-Extra notes
+**Extra notes**
 
-- Parquet input: if you plan to profile Parquet files, install the optional packages:
+- **Parquet input:** if you plan to profile Parquet files, install the optional packages:
 
 ```bash
 python -m pip install pandas pyarrow
 ```
 
-- Schema validation: the `--schema` option takes a JSON file mapping column names to expected types (for example `{"age": "numeric"}`) and `--validate` will compare the detected types to that mapping and report mismatches.
+- **Schema validation:** the `--schema` option takes a JSON file mapping column names to expected types (for example `{"age": "numeric"}`) and `--validate` will compare the detected types to that mapping and report mismatches.
 
 
 ## 🛠️ How It Works
