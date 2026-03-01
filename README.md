@@ -545,7 +545,7 @@ Column: age | Type: int
 
 **What GitHub Copilot Helped With:**
 - Generated the complete project structure including all Python modules (cli.py, reports.py, __main__.py) with correct imports and function signatures
-- Synthesized a comprehensive 390-line README with installation instructions, usage examples, troubleshooting, and edge case documentation
+- Created a comprehensive README file with installation instructions, usage examples, troubleshooting, and edge case documentation
 - Wrote beautiful, production-ready HTML report formatting with modern CSS styling (gradients, responsive grid, color schemes)
 - Generated 20+ unit test cases covering normal flows, edge cases (empty files, all-null columns), and large file handling
 - Provided JSON and table formatting logic that handles null values, type conversions, and numerical statistics correctly
@@ -555,7 +555,7 @@ Column: age | Type: int
 - Didn't catch that `python -m csv_profiler` wouldn't work without proper package structure until runtime testing
 - HTML output required tuning and style adjustments for better visual hierarchy (Copilot generated working HTML but with less polish initially)
 - Test file paths required adjustment (Copilot generated hardcoded paths that needed to be relative)
-- Copilot didn't proactively suggest the Git setup, requirements.txt file, or assignment deliverable structure—these were added after the fact based on assignment requirements
+- Copilot didn't proactively suggest the Git setup, requirements.txt file, or assignment deliverable structure - these were added after the fact based on assignment requirements
 
 **What Surprised Me:**
 - I was surprised at how confidently Copilot generated large sections of the project—such as the initial CLI structure, HTML layout, and the detailed README text. It often produced results that were close to production‑ready on the first pass.
